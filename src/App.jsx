@@ -3,7 +3,7 @@ import './App.css'
 import './index.css'
 import TodoHeader from './components/TodoHeader'
 import AddButton from './components/AddButton'
-import FilterDropDown from './components/FilterDropDown'
+import FilterDropDown from './components/FilterSelection'
 import TodoList from './components/TodoList'
 import CustomModal from './components/Modal'
 
@@ -14,11 +14,27 @@ function App() {
     const saveTodos = localStorage.getItem('todos');
     return saveTodos ? JSON.parse(saveTodos) : []; 
   }); //adding todos state
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
+
+  const handleFilterChange = (selectedFilter) => {
+    setFilter(selectedFilter);
+  };
   
+  const getFilteredTodos = () => {
+    switch(filter) {
+      case 'completed':
+        return todos.filter(todo => todo.status === 'completed');
+      case 'incomplete':
+        return todos.filter(todo => todo.status === 'incomplete');
+      default:
+        return todos;
+    }
+  }
+
   const addTodo = (todo) => {
     setTodos([...todos, {...todo}]);
   }
@@ -46,9 +62,9 @@ function App() {
         <div className='action-bar flex items-center h-16 justify-between'>
           <AddButton onAddClick={() => openModal()} />
           <CustomModal isOpen={modalIsOpen} onRequestClose={() =>closeModal()} action={addTodo} headerText={"add todo"}/>
-          <FilterDropDown/>
+          <FilterDropDown onFilterChange={handleFilterChange}/>
         </div>
-        <TodoList todos={todos} onEdit={editTodo} onDelete={deleteTodo} onModalOpen={() => openModal()}/>
+        <TodoList todos={getFilteredTodos()} onEdit={editTodo} onDelete={deleteTodo} onModalOpen={() => openModal()}/>
         
       </div>
     </div>

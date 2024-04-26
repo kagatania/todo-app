@@ -5,8 +5,6 @@ import { overlay } from "three/examples/jsm/nodes/Nodes.js";
 
 Modal.setAppElement('#root');
 
-
-
 export default function CustomModal({ isOpen, onRequestClose, action, headerText, todo }) {
 
     const[title, setTitle] = useState('');
@@ -121,8 +119,6 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                     </div>
                 </div>
             </form>
-
-
         </Modal>
 
     );
