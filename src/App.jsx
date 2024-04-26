@@ -6,32 +6,23 @@ import AddButton from './components/AddButton'
 import FilterDropDown from './components/FilterDropDown'
 import TodoList from './components/TodoList'
 import CustomModal from './components/Modal'
-import { update } from 'three/examples/jsm/libs/tween.module.js'
 
 
 function App() {
   const [modalIsOpen, setIsOpen] = useState(false); //modal flips switch
-  const [todos, setTodos] = useState([]); //addiung todos state
-
-  function getDateAndTime() {
-    const today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    var ampm = h >= 12 ? 'pm' : 'am'
-    h = h % 12;
-    h = h ? h :12;
-    m = m < 10 ? '0'+ m : m 
-    const strTime = h + ':' + m + ' ' + ampm + ', '  + today.toLocaleDateString()
-    return  strTime;
-  }
-
+  const [todos, setTodos] = useState([]); //adding todos state
+  
   const addTodo = (todo) => {
     setTodos([...todos, {...todo, id: Date.now()}]);
   }
 
-  const editTodo = (id, updatedTodo) => {
-    setTodos(todos.map(todo => todo.id === id ? {...todo, ...updatedTodo} : todo))
+  const editTodo = (updatedTodo) => {
+    setTodos(todos.map(todo => todo.id === updatedTodo.id ? {...todo, ...updatedTodo} : todo))
   }
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
 
   function openModal() {
     setIsOpen(true);
@@ -40,16 +31,17 @@ function App() {
   function closeModal() {
     setIsOpen(false);
   }
+
   return (
     <div className='mx-5'>
       <TodoHeader/>
-      <div className='main-content mx-auto my-0 max-w-screen-md w-full'>
+      <div className='mx-auto my-0 max-w-screen-md w-full'>
         <div className='action-bar flex items-center h-16 justify-between'>
-          <AddButton onAddClick={openModal} />
-          <CustomModal isOpen={modalIsOpen} onRequestClose={closeModal} />
+          <AddButton onAddClick={() => openModal()} />
+          <CustomModal isOpen={modalIsOpen} onRequestClose={() =>closeModal()} action={addTodo} headerText={"add todo"}/>
           <FilterDropDown/>
         </div>
-        <TodoList timeStamp={getDateAndTime()}/>
+        <TodoList todos={todos} onEdit={editTodo} onDelete={deleteTodo} onModalOpen={() => openModal()}/>
         
       </div>
     </div>
