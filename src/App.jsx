@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import './index.css'
 import TodoHeader from './components/TodoHeader'
@@ -10,10 +10,17 @@ import CustomModal from './components/Modal'
 
 function App() {
   const [modalIsOpen, setIsOpen] = useState(false); //modal flips switch
-  const [todos, setTodos] = useState([]); //adding todos state
+  const [todos, setTodos] = useState(() => {
+    const saveTodos = localStorage.getItem('todos');
+    return saveTodos ? JSON.parse(saveTodos) : []; 
+  }); //adding todos state
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
   
   const addTodo = (todo) => {
-    setTodos([...todos, {...todo, id: Date.now()}]);
+    setTodos([...todos, {...todo}]);
   }
 
   const editTodo = (updatedTodo) => {

@@ -37,10 +37,10 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
         if (!title.trim()) return;
         
         action({
-            id: todo?.id,
+            id: todo?.id ? todo.id : Date.now(),
             title,
             status,
-            timeStamp: timeAndDate()
+            timeStamp: todo?.timeStamp ? todo.timeStamp : timeAndDate()
         });
         setTitle('');
         setStatus('incomplete');
@@ -88,9 +88,9 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                                 title
                                 <input 
                                 id="title" 
-                                defaultValue={title}
+                                value={title}
                                 onChange={e => setTitle(e.target.value)}
-                                className="focus:ring-blue-500 focus:border-blue-500 shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight" 
+                                className="focus:ring-blue-500 focus:border-blue-500 shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight font-normal" 
                                 type="text" 
                                 />
                             </label>
@@ -100,7 +100,7 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                                 status
                                 <select 
                                 id="status" 
-                                defaultValue={status}
+                                value={status}
                                 onChange={e => setStatus(e.target.value)}
                                 className="focus:ring-blue-500 focus:border-blue-500 capitalize shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 font-normal"
                                 >
