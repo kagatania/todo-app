@@ -1,5 +1,6 @@
+import { toast } from "react-toastify";
 import CustomModal from "./Modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function TodoItem({todo, onDelete, onEdit}) {
 
@@ -28,9 +29,8 @@ export default function TodoItem({todo, onDelete, onEdit}) {
                 <button 
                 onClick={() => setEditModalOpen(true)}
                 className="border-none text-black-2 bg-gray-1 px-2 py-1 cursor-pointer rounded"><i className="fa fa-pencil"></i></button>
-                <CustomModal isOpen={isEditModalOpen} action={onEdit} onRequestClose={() => setEditModalOpen(false)} headerText="update todo" todo={todo}/>
+                <CustomModal isOpen={isEditModalOpen} action={onEdit} onRequestClose={() => setEditModalOpen(false)} headerText="update todo" todo={todo} actionMessage={"Task updated successfully"}/>
             </div>
-
         </div>
     );
 }

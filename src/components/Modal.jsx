@@ -1,15 +1,16 @@
 
 import React, { useEffect, useState } from "react";
 import Modal from 'react-modal';
+import { toast} from 'react-toastify';
 import { overlay } from "three/examples/jsm/nodes/Nodes.js";
 
 Modal.setAppElement('#root');
 
-export default function CustomModal({ isOpen, onRequestClose, action, headerText, todo }) {
+export default function CustomModal({ isOpen, onRequestClose, action, headerText, todo}) {
 
     const[title, setTitle] = useState('');
     const[status, setStatus] = useState('incomplete');
-
+    
 
     useEffect(() => {
         if (todo) {
@@ -32,7 +33,10 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!title.trim()) return;
+        if (!title.trim()) {
+            toast.error("Task cannot be empty!!");
+            return;
+        }
         
         action({
             id: todo?.id ? todo.id : Date.now(),
@@ -47,6 +51,7 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
 
     const buttonText = headerText === "add todo"? "add task" : "update task"
 
+    
     return (
         <Modal
             isOpen={isOpen}
@@ -75,7 +80,7 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                 }
             }}
         >
-            <form onSubmit={handleSubmit}>
+            <form >
                 <div className="w-full max-w-4xl bg-bg-2">
                     <div className="px-2 py-2">
                         <div className="capitalize mb-4 font-bold text-black-1">
@@ -108,14 +113,15 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                             </label>
                         </div>
                         <div className="flex gap-3">  
-                            <button className="capitalize bg-primaryPurple text-center text-white border-none rounded-md cursor-pointer font-medium text-base h-auto overflow-hidden px-5 py-2">
+                            <button
+                                onClick={handleSubmit} 
+                                className="capitalize bg-primaryPurple text-center text-white border-none rounded-md cursor-pointer font-medium text-base h-auto overflow-hidden px-5 py-2">
                                 {buttonText}
                             </button>
                             <button className="capitalize bg-bg-3 text-black-1 border-none rounded-md cursor-pointer font-medium text-base h-auto overflow-hidden px-5 py-2" 
                             onClick={onRequestClose}
                             >close</button>
                         </div>
-
                     </div>
                 </div>
             </form>
