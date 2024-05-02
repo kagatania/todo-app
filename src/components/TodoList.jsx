@@ -1,6 +1,23 @@
+import useStore from "../GlobalProps";
 import TodoItem from "./TodoItem";
 
-export default function TodoList({todos, onEdit, onDelete}) {
+
+export default function TodoList() {
+
+    const {todos, filter} = useStore(state => ({ todos: state.todos, filter: state.filter}));
+
+    const getFilteredTodos = () => {
+    switch (filter) {
+      case 'completed':
+        return todos.filter(todo => todo.status === 'completed');
+      case 'incomplete':
+        return todos.filter(todo => todo.status === 'incomplete');
+      default:
+        return todos;
+    }
+  }
+
+    const filteredTodos = getFilteredTodos();
     
     return (
         <div className="transform-none opacity-100 bg-bg-2 rounded-xl p-5  flex flex-col gap-3">
@@ -9,8 +26,8 @@ export default function TodoList({todos, onEdit, onDelete}) {
                     no todos
                 </div>
             ) : (
-                todos.map(todo => (
-                    <TodoItem key={todo.id} todo={todo} onEdit={onEdit} onDelete={onDelete}/>
+                filteredTodos.map(todo => (
+                    <TodoItem key={todo.id} todo={todo}/>
                 ))
             )}
         </div>

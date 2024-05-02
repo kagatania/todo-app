@@ -1,24 +1,25 @@
 
-import React, { useEffect, useState } from "react";
+
 import Modal from 'react-modal';
 import { toast} from 'react-toastify';
-import { overlay } from "three/examples/jsm/nodes/Nodes.js";
+import useStore from '../GlobalProps';
+import React, { useEffect, useState } from "react";
+
+
 
 Modal.setAppElement('#root');
 
-export default function CustomModal({ isOpen, onRequestClose, action, headerText, todo}) {
+export default function AddModal() {
 
     const[title, setTitle] = useState('');
     const[status, setStatus] = useState('incomplete');
+
+    const { modalAddTaskVisible, toggleAddModal, addTodo} = useStore(state => ({
+        modalAddTaskVisible: state.modalAddTaskVisible,
+        toggleAddModal: state.toggleAddModal,
+        addTodo: state.addTodo
+    }));
     
-
-    useEffect(() => {
-        if (todo) {
-            setStatus(todo.status);
-            setTitle(todo.title);
-        }
-    },[todo]);
-
     const timeAndDate = () => {
         const today = new Date();
         var h = today.getHours();
@@ -33,30 +34,29 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
         if (!title.trim()) {
             toast.error("Task cannot be empty!!");
             return;
         }
         
-        action({
-            id: todo?.id ? todo.id : Date.now(),
+        addTodo({
+            id: Date.now(),
             title,
             status,
-            timeStamp: todo?.timeStamp ? todo.timeStamp : timeAndDate()
+            timeStamp: timeAndDate()
         });
         setTitle('');
         setStatus('incomplete');
-        onRequestClose();
+        toggleAddModal();
     }
-
-    const buttonText = headerText === "add todo"? "add task" : "update task"
 
     
     return (
         <Modal
-            isOpen={isOpen}
-            onRequestClose={onRequestClose}
-            contentLabel="Modal on Request"
+            isOpen={modalAddTaskVisible}
+            onRequestClose={toggleAddModal}
+            contentLabel="Add task here"
             closeTimeoutMS={200}
             style={{
                 overlay: {
@@ -84,7 +84,7 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                 <div className="w-full max-w-4xl bg-bg-2">
                     <div className="px-2 py-2">
                         <div className="capitalize mb-4 font-bold text-black-1">
-                            <h2>{headerText}</h2>
+                            <h2>add todo</h2>
                         </div>
                         <div className="mb-4">
                             <label className="block text-black-1 text-sm font-medium mb-2 capitalize" htmlFor="title">
@@ -116,16 +116,16 @@ export default function CustomModal({ isOpen, onRequestClose, action, headerText
                             <button
                                 onClick={handleSubmit} 
                                 className="capitalize bg-primaryPurple text-center text-white border-none rounded-md cursor-pointer font-medium text-base h-auto overflow-hidden px-5 py-2">
-                                {buttonText}
+                                {"add task"}
                             </button>
                             <button className="capitalize bg-bg-3 text-black-1 border-none rounded-md cursor-pointer font-medium text-base h-auto overflow-hidden px-5 py-2" 
-                            onClick={onRequestClose}
+                            onClick={toggleAddModal}
+                            type='button'
                             >close</button>
                         </div>
                     </div>
                 </div>
             </form>
         </Modal>
-
     );
 }
